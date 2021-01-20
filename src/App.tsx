@@ -1,37 +1,32 @@
 import React from 'react'
 import './App.css'
 
-interface iProps {
-  step?: number
-  initialCount?: number
-}
+const initialState = {count: 0}
 
-interface iState {
-  count: number
-}
+type STATE = {count: number}
 
-type Action =
+type ACTION =
   | {type: 'increment'; count: number}
   | {type: 'decrement'; count: number}
 
 // 1st agrument current state
 // 2nd argument dispatch function or new state
-function countReducer(state: iState, action: Action): iState {
+function countReducer(state: STATE, action: ACTION) {
   switch (action.type) {
     case 'increment':
-      return {count: state + 1}
+      return {count: state.count + 1}
     case 'decrement':
-      return {count: state - 1}
+      return {count: state.count - 1}
     default:
-      return state
+      throw new Error('This should not happen :D')
   }
 }
 
-const Counter: React.FC<iProps> = ({step = 1, initialCount = 0}) => {
-  const [count, dispatch] = React.useReducer(countReducer, initialCount)
+const Counter = () => {
+  const [state, dispatch] = React.useReducer(countReducer, initialState)
   return (
     <>
-      <h1 style={{textAlign: 'center'}}>{count}</h1>
+      <h1 style={{textAlign: 'center'}}>{state.count}</h1>
       <div
         style={{
           display: 'grid',
@@ -39,8 +34,12 @@ const Counter: React.FC<iProps> = ({step = 1, initialCount = 0}) => {
           gridGap: '0.75rem',
         }}
       >
-        <button onClick={() => dispatch({type: 'increment', count})}>+</button>
-        <button onClick={() => dispatch(count - step)}>-</button>
+        <button onClick={() => dispatch({type: 'increment', count: 10})}>
+          +
+        </button>
+        <button onClick={() => dispatch({type: 'decrement', count: 1})}>
+          -
+        </button>
       </div>
     </>
   )
